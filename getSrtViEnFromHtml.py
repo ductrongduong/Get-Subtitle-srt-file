@@ -17,7 +17,7 @@ def convert_time(seconds):
 
 for filename in filenames:
     # Read the HTML file
-    with open(filename + '.html', 'r', encoding='utf-8') as file:
+    with open('../sub/' + filename + '.html', 'r', encoding='utf-8') as file:
         html_content = file.read()
 
     # Parse the HTML content
@@ -44,11 +44,11 @@ for filename in filenames:
         srt_content_vi += f"{text_vi}\n\n"
 
     # Write to English SRT file
-    with open(filename + '_en.srt', 'w', encoding='utf-8') as file:
+    with open('../sub/' + filename + '_en.srt', 'w', encoding='utf-8') as file:
         file.write(srt_content_en)
 
     # Write to Vietnamese SRT file
-    with open(filename + '_vi.srt', 'w', encoding='utf-8') as file:
+    with open('../sub/' + filename + '_vi.srt', 'w', encoding='utf-8') as file:
         file.write(srt_content_vi)
 
     print(f"English and Vietnamese SRT files created successfully for {filename}.")
