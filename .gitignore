@@ -1,2 +1,10 @@
 
 .idea/
+
+*.html
+
+*.srt
+
+br_s2_e9_files/
+
+the_social_network_files/

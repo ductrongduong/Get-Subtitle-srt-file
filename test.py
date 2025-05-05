@@ -1,16 +1,9 @@
 import re
 from bs4 import BeautifulSoup
 
-# Read the HTML file
-filename = 'e1'
-with open(filename + '.html', 'r', encoding='utf-8') as file:
-    html_content = file.read()
-
-# Parse the HTML content
-soup = BeautifulSoup(html_content, 'html.parser')
-
-# Find all subtitle spans
-subtitles = soup.find_all('span', id=re.compile('^cue'))
+# List of filenames
+# filenames = [f'h{i}' for i in range(1, 8)]
+filenames = ['br_s2_e9', 'the_social_network']
 
 # Function to convert time format
 def convert_time(seconds):
@@ -22,29 +15,40 @@ def convert_time(seconds):
     s = s % 60
     return f"{h:02}:{m:02}:{s:02},{ms:03}"
 
-# Create SRT content for English and Vietnamese
-srt_content_en = ""
-srt_content_vi = ""
-for index, subtitle in enumerate(subtitles):
-    start = float(subtitle['data-start'])
-    stop = float(subtitle['data-stop'])
-    text_en = subtitle.find('span', class_='js-textEn').text.strip()
-    text_vi = subtitle.find('small', class_='js-textVi').text.strip()
+for filename in filenames:
+    # Read the HTML file
+    with open(filename + '.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
 
-    srt_content_en += f"{index + 1}\n"
-    srt_content_en += f"{convert_time(start)} --> {convert_time(stop)}\n"
-    srt_content_en += f"{text_en}\n\n"
+    # Parse the HTML content
+    soup = BeautifulSoup(html_content, 'html.parser')
 
-    srt_content_vi += f"{index + 1}\n"
-    srt_content_vi += f"{convert_time(start)} --> {convert_time(stop)}\n"
-    srt_content_vi += f"{text_vi}\n\n"
+    # Find all subtitle spans
+    subtitles = soup.find_all('span', id=re.compile('^cue'))
 
-# Write to English SRT file
-with open(filename + '_en.srt', 'w', encoding='utf-8') as file:
-    file.write(srt_content_en)
+    # Create SRT content for English and Vietnamese
+    srt_content_en = ""
+    srt_content_vi = ""
+    for index, subtitle in enumerate(subtitles):
+        start = float(subtitle['data-start'])
+        stop = float(subtitle['data-stop'])
+        text_en = subtitle.find('span', class_='js-textEn').text.strip()
+        text_vi = subtitle.find('small', class_='js-textVi').text.strip()
 
-# Write to Vietnamese SRT file
-with open(filename + '_vi.srt', 'w', encoding='utf-8') as file:
-    file.write(srt_content_vi)
+        srt_content_en += f"{index + 1}\n"
+        srt_content_en += f"{convert_time(start)} --> {convert_time(stop)}\n"
+        srt_content_en += f"{text_en}\n\n"
 
-print("English and Vietnamese SRT files created successfully.")
+        srt_content_vi += f"{index + 1}\n"
+        srt_content_vi += f"{convert_time(start)} --> {convert_time(stop)}\n"
+        srt_content_vi += f"{text_vi}\n\n"
+
+    # Write to English SRT file
+    with open(filename + '_en.srt', 'w', encoding='utf-8') as file:
+        file.write(srt_content_en)
+
+    # Write to Vietnamese SRT file
+    with open(filename + '_vi.srt', 'w', encoding='utf-8') as file:
+        file.write(srt_content_vi)
+
+    print(f"English and Vietnamese SRT files created successfully for {filename}.")
